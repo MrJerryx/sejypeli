@@ -16,8 +16,12 @@ public class Pong : PhysicsGame
     PhysicsObject maila1;
     PhysicsObject maila2;
 
+    PhysicsObject vasenReuna;
+    PhysicsObject oikeaReuna;  
+
     IntMeter pelaajan1Pisteet;
-    IntMeter pelaajan1Pisteet;
+    IntMeter pelaajan2Pisteet;
+
     public override void Begin()
     {
         LuoKentta();
@@ -33,14 +37,36 @@ public class Pong : PhysicsGame
         pallo.X = -200.0;
         pallo.Y = 0.0;
         pallo.Restitution = 1.0;
+        AddCollisionHandler(pallo, KasittelePallonTormays);
 
         maila1 = LuoMaila(Level.Left + 20.0, 0.0);
         maila2 = LuoMaila(Level.Right - 20.0, 0.0);
 
         Level.Background.Color = Color.Black;
-        Level.CreateBorders(1.0, false);
+
+        vasenReuna = Level.CreateLeftBorder();
+        vasenReuna.Restitution = 1.0;
+        vasenReuna.KineticFriction = 0.0;
+        vasenReuna.IsVisible = false;
+
+        oikeaReuna = Level.CreateRightBorder();
+        oikeaReuna.Restitution = 1.0;
+        oikeaReuna.KineticFriction = 0.0;
+        oikeaReuna.IsVisible = false;
+
+        PhysicsObject ylaReuna = Level.CreateTopBorder();
+        ylaReuna.Restitution = 1.0;
+        ylaReuna.KineticFriction = 0.0;
+        ylaReuna.IsVisible = false;
+
+        PhysicsObject alaReuna = Level.CreateBottomBorder();
+        alaReuna.Restitution = 1.0;
+        alaReuna.IsVisible = false;
+        alaReuna.KineticFriction = 0.0;
 
         Camera.ZoomToLevel();
+
+      
 
     }
     void AloitaPeli()
@@ -107,7 +133,8 @@ public class Pong : PhysicsGame
 }
     void LisaaLaskurit()
     {
-    
+        pelaajan1Pisteet = LuoPisteLaskuri(Screen.Left + 100.0, Screen.Top - 100.0);
+        pelaajan2Pisteet = LuoPisteLaskuri(Screen.Right - 100.0, Screen.Top - 100.0);
     }
 
     IntMeter LuoPisteLaskuri(double x, double y)
@@ -125,5 +152,17 @@ public class Pong : PhysicsGame
         Add(naytto);
 
         return laskuri;
+    }
+
+    void KasittelePallonTormays(PhysicsObject pallo, PhysicsObject kohde)
+    {
+        if (kohde == oikeaReuna)
+        {
+            pelaajan1Pisteet.Value += 1;
+        }
+        else if (kohde == vasenReuna)
+        {
+            pelaajan2Pisteet.Value += 1;
+        }
     }
 }

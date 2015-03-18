@@ -15,20 +15,27 @@ public class InvadeTheCastle : PhysicsGame
     DoubleMeter Laskuri1;
     DoubleMeter Laskuri2;
 
+    IntMeter ElamaLaskuri1;
+    IntMeter ElamaLaskuri2;
+
     Cannon pelaajan1Ase;
 
     Image LinnanKuva1 = LoadImage("LinnanKuva1");
     Image LinnanKuva2 = LoadImage("LinnanKuva2");
     Image Nuoli = LoadImage("Nuoli");
+    Image Jouskari = LoadImage("jouskari");
 
     public override void Begin()
     {
         LuoKentta();
         LuoLaskuri1();
         LuoLaskuri2();
+        LuoElamaLaskuri1();
+        LuoElamaLaskuri2();
 
 
-        Camera.ZoomToLevel();
+        Camera.ZoomToAllObjects();
+        
 
         Keyboard.Listen(Key.A, ButtonState.Down,
          LiikutaPelaajaa, null, new Vector(-10000, 0));
@@ -76,7 +83,7 @@ public class InvadeTheCastle : PhysicsGame
         ruudut.SetTileMethod(Color.DarkGray, LuoLinna2);
      
         
-        ruudut.Execute(20, 30);
+        ruudut.Execute(30, 20);
 
         Gravity = new Vector(0.0, -800.0);
     }
@@ -97,13 +104,9 @@ public class InvadeTheCastle : PhysicsGame
 
         Add(Palkki1);
 
-     /*
-         for (int i = 0; 1 < 3000; i++)
-        {
-            Laskuri1.Value += 1;
-        }
-     */
     }
+
+ 
 
     void LuoLaskuri2()
     {
@@ -121,6 +124,40 @@ public class InvadeTheCastle : PhysicsGame
         Add(Palkki2);
     }
 
+
+    void LuoElamaLaskuri1()
+
+    {
+        ElamaLaskuri1 = new IntMeter(0);
+
+        Label ElamaNaytto1 = new Label();
+        ElamaNaytto1.X = Screen.Left + 100;
+        ElamaNaytto1.Y = Screen.Top - 100;
+        ElamaNaytto1.TextColor = Color.Black;
+        ElamaNaytto1.Color = Color.LightBlue;
+
+        ElamaNaytto1.BindTo(ElamaLaskuri1);
+        Add(ElamaNaytto1);
+     
+    }
+
+    void LuoElamaLaskuri2()
+    {
+        ElamaLaskuri2 = new IntMeter(0);
+
+        Label ElamaNaytto2 = new Label();
+        ElamaNaytto2.X = Screen.Right - 100;
+        ElamaNaytto2.Y = Screen.Top - 100;
+        ElamaNaytto2.TextColor = Color.Black;
+        ElamaNaytto2.Color = Color.LightBlue;
+
+        ElamaNaytto2.BindTo(ElamaLaskuri2);
+        Add(ElamaNaytto2);
+
+    }
+
+   
+
     void LuoPelaaja1(Vector paikka, double leveys, double korkeus)
    
     {
@@ -128,19 +165,33 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1.Position = paikka;
         Add(pelaaja1);
 
-        pelaajan1Ase = new Cannon(30, 10);
+        pelaajan1Ase = new Cannon(30, 30);
+
+        pelaajan1Ase.Image = Jouskari;
 
         pelaajan1Ase.Ammo.Value = 1000;
 
-        pelaajan1Ase.ProjectileCollision = AmmusOsui;
+        pelaajan1Ase.CanHitOwner = false;
 
+        pelaajan1Ase.ProjectileCollision = AmmusOsui;
+        
         pelaaja1.Add(pelaajan1Ase);
     }
 
     void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
 
     {
-        kohde.Destroy();
+        if (kohde.Tag == "pelaaja2")
+
+        {
+            kohde.Destroy();
+        }
+
+        if (kohde.Tag == "Linna2")
+
+        { 
+            
+        }
     }
 
     void AmmuAseella(Cannon ase)
@@ -149,9 +200,11 @@ public class InvadeTheCastle : PhysicsGame
 
         if (ammus != null)
         {
-            ammus.Size *= 1;
+            ammus.Width = 25;
+            ammus.Height = 5;
             ammus.Image = Nuoli;
-            //ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
+            ammus.CollisionIgnoreGroup = 1;
+            ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
         }
     }
     
@@ -160,6 +213,7 @@ public class InvadeTheCastle : PhysicsGame
     {
         pelaaja2 = new PlatformCharacter(20, 30);
         pelaaja2.Position = paikka;
+        pelaaja2.Tag = "pelaaja2";
         Add(pelaaja2);
     }
 

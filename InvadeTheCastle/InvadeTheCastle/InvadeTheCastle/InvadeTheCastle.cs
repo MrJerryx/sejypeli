@@ -6,11 +6,46 @@ using Jypeli.Controls;
 using Jypeli.Effects;
 using Jypeli.Widgets;
 
+
+class Linna : PhysicsObject
+
+{
+  
+
+    public int elamat { get; set; }
+
+    private IntMeter elamaLaskuri = new IntMeter(3, 0, 3);
+    public IntMeter ElamaLaskuri { get { return elamaLaskuri; } }
+
+
+    public Linna(double leveys, double korkeus)
+        : base(leveys, korkeus)
+
+       
+    {
+        elamaLaskuri.LowerLimit += delegate { this.Destroy(); };
+        
+    }
+
+    void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
+
+    {
+        if (kohde.Tag == "Linna2")
+        {
+            ElamaLaskuri.Value -= 1;
+        }
+    }
+
+}
+
 public class InvadeTheCastle : PhysicsGame
 {
 
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
+
+    Image Linnankuva1 = LoadImage("LinnanKuva1");
+    Image LinnanKuva2 = LoadImage("LinnanKuva2");
 
     DoubleMeter Laskuri1;
     DoubleMeter Laskuri2;
@@ -19,11 +54,11 @@ public class InvadeTheCastle : PhysicsGame
     IntMeter ElamaLaskuri2;
 
     Cannon pelaajan1Ase;
+    Cannon pelaajan2Ase;
 
-    Image LinnanKuva1 = LoadImage("LinnanKuva1");
-    Image LinnanKuva2 = LoadImage("LinnanKuva2");
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
+    Image liekki = LoadImage("liekki");
 
     public override void Begin()
     {
@@ -32,7 +67,7 @@ public class InvadeTheCastle : PhysicsGame
         LuoLaskuri2();
         LuoElamaLaskuri1();
         LuoElamaLaskuri2();
-
+        Liekit();
 
         Camera.ZoomToAllObjects();
         
@@ -66,6 +101,7 @@ public class InvadeTheCastle : PhysicsGame
           LiikutaPelaajaa2, null, new Vector(0, 0));
 
         Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaajan1Ase);
+        Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaajan2Ase);
 
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
@@ -81,10 +117,13 @@ public class InvadeTheCastle : PhysicsGame
         ruudut.SetTileMethod(Color.Black, LuoTaso);
         ruudut.SetTileMethod(Color.Gray, LuoLinna1);
         ruudut.SetTileMethod(Color.DarkGray, LuoLinna2);
+        ruudut.SetTileMethod(Color.Rose, LuoAnsa1);
+        ruudut.SetTileMethod(Color.Orange, LuoAnsa2);
      
+       
         
-        ruudut.Execute(30, 20);
-
+        ruudut.Execute(50, 20);
+        
         Gravity = new Vector(0.0, -800.0);
     }
   
@@ -163,6 +202,7 @@ public class InvadeTheCastle : PhysicsGame
     {
         pelaaja1 = new PlatformCharacter(20, 30);
         pelaaja1.Position = paikka;
+        pelaaja1.Tag = "pelaaja1";
         Add(pelaaja1);
 
         pelaajan1Ase = new Cannon(30, 30);
@@ -178,19 +218,43 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1.Add(pelaajan1Ase);
     }
 
+    void LuoPelaaja2(Vector paikka, double leveys, double korkeus)
+    {
+        pelaaja2 = new PlatformCharacter(20, 30);
+        pelaaja2.Position = paikka;
+        pelaaja2.Tag = "pelaaja2";
+        Add(pelaaja2);
+
+        pelaajan2Ase = new Cannon(30, 30);
+
+        pelaajan2Ase.Image = Jouskari;
+
+        pelaajan2Ase.Ammo.Value = 1000;
+
+        pelaajan2Ase.CanHitOwner = false;
+
+        pelaajan2Ase.ProjectileCollision = AmmusOsui2;
+
+        pelaaja2.Add(pelaajan2Ase);
+    }
+
     void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
 
     {
         if (kohde.Tag == "pelaaja2")
 
         {
-            kohde.Destroy();
+            Remove(kohde);
         }
 
-        if (kohde.Tag == "Linna2")
+    }
 
-        { 
-            
+
+    void AmmusOsui2(PhysicsObject ammus, PhysicsObject kohde)
+    {
+        if (kohde.Tag == "pelaaja1")
+        {
+            Remove(kohde);
         }
     }
 
@@ -205,52 +269,68 @@ public class InvadeTheCastle : PhysicsGame
             ammus.Image = Nuoli;
             ammus.CollisionIgnoreGroup = 1;
             ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
+            ammus.CanRotate = false;
         }
     }
-    
-
-    void LuoPelaaja2(Vector paikka, double leveys, double korkeus)
-    {
-        pelaaja2 = new PlatformCharacter(20, 30);
-        pelaaja2.Position = paikka;
-        pelaaja2.Tag = "pelaaja2";
-        Add(pelaaja2);
-    }
+   
 
     void LuoTaso(Vector paikka, double leveys, double korkeus)
     {
         PhysicsObject taso = PhysicsObject.CreateStaticObject(leveys, korkeus);
         taso.Position = paikka;
         taso.Color = Color.Green;
-        taso.CollisionIgnoreGroup = 1;
         Add(taso);
+    }
+
+    void LuoAnsa1(Vector paikka, double leveys, double korkeus)
+    {
+        PhysicsObject Ansa1 = new PhysicsObject(50, 20);
+        Ansa1.Position = paikka;
+        Ansa1.IgnoresGravity = true;
+        Ansa1.CollisionIgnoreGroup = 1;
+        Ansa1.Mass = 20000;
+        Add(Ansa1);
+    }
+
+    void LuoAnsa2(Vector paikka, double leveys, double korkeus)
+    {
+        PhysicsObject Ansa2 = new PhysicsObject(50, 20);
+        Ansa2.Position = paikka;
+        Ansa2.IgnoresGravity = true;
+        Add(Ansa2);
     }
 
     void LuoLinna1(Vector paikka, double leveys, double korkeus)
     {
-        PhysicsObject Linna1 = new PhysicsObject(100, 60);
-        Linna1.IgnoresCollisionResponse = true;
+
+        Linna Linna1 = new Linna(100, 60);
+        Linna1.elamat = 3;
+        Linna1.Image = Linnankuva1;
         Linna1.Position = paikka;
-        Linna1.Image = LinnanKuva1;
         Linna1.Tag = "Linna1";
-        Linna1.IgnoresGravity = true;
-        Add(Linna1, 1);
-
-
+        Linna1.Mass = 20000;
+        Add(Linna1);
     }
 
 
     void LuoLinna2(Vector paikka, double leveys, double korkeus)
     {
-        PhysicsObject Linna2 = new PhysicsObject(100, 60);
-        Linna2.IgnoresCollisionResponse = true;
+        Linna Linna2 = new Linna(100, 60);
         Linna2.Position = paikka;
         Linna2.Image = LinnanKuva2;
         Linna2.Tag = "Linna2";
-        Linna2.IgnoresGravity = true;
-        Add(Linna2, 1);
+        Linna2.Mass = 20000;
+        Add(Linna2);
 
 
+    }
+
+    void Liekit()
+
+    {
+        Flame Liekki = new Flame(liekki);
+        Liekki.Position = new Vector(10,10);
+        Add(Liekki);
     }
 
     void LiikutaPelaajaa2(Vector vektori)

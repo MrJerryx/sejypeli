@@ -7,42 +7,15 @@ using Jypeli.Effects;
 using Jypeli.Widgets;
 
 
-class Linna : PhysicsObject
-
-{
-  
-
-    public int elamat { get; set; }
-
-    private IntMeter elamaLaskuri = new IntMeter(3, 0, 3);
-    public IntMeter ElamaLaskuri { get { return elamaLaskuri; } }
-
-
-    public Linna(double leveys, double korkeus)
-        : base(leveys, korkeus)
-
-       
-    {
-        elamaLaskuri.LowerLimit += delegate { this.Destroy(); };
-        
-    }
-
-    void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
-
-    {
-        if (kohde.Tag == "Linna2")
-        {
-            ElamaLaskuri.Value -= 1;
-        }
-    }
-
-}
 
 public class InvadeTheCastle : PhysicsGame
 {
 
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
+
+    PhysicsObject Linna1;
+    PhysicsObject Linna2;
 
     Image Linnankuva1 = LoadImage("LinnanKuva1");
     Image LinnanKuva2 = LoadImage("LinnanKuva2");
@@ -129,8 +102,9 @@ public class InvadeTheCastle : PhysicsGame
   
     void LuoLaskuri1()
     {
-        Laskuri1 = new DoubleMeter(0);
+        Laskuri1 = new DoubleMeter(3000);
         Laskuri1.MaxValue = 3000;
+
 
         ProgressBar Palkki1 = new ProgressBar(300, 30);
         Palkki1.BindTo(Laskuri1);
@@ -149,8 +123,9 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoLaskuri2()
     {
-        Laskuri2 = new DoubleMeter(0);
+        Laskuri2 = new DoubleMeter(3000);
         Laskuri2.MaxValue = 3000;
+      
 
         ProgressBar Palkki2 = new ProgressBar(300, 30);
         Palkki2.BindTo(Laskuri2);
@@ -160,6 +135,7 @@ public class InvadeTheCastle : PhysicsGame
 
         Palkki2.X = Screen.Right - 300;
         Palkki2.Y = Screen.Top - 100;
+
         Add(Palkki2);
     }
 
@@ -247,6 +223,11 @@ public class InvadeTheCastle : PhysicsGame
             Remove(kohde);
         }
 
+        if (kohde.Tag == "Linna2")
+        {
+            Laskuri2.Value -= 500;
+        }
+
     }
 
 
@@ -255,6 +236,12 @@ public class InvadeTheCastle : PhysicsGame
         if (kohde.Tag == "pelaaja1")
         {
             Remove(kohde);
+        }
+
+        if (kohde.Tag == "Linna1")
+
+        {
+            Laskuri1.Value -= 500;
         }
     }
 
@@ -303,8 +290,7 @@ public class InvadeTheCastle : PhysicsGame
     void LuoLinna1(Vector paikka, double leveys, double korkeus)
     {
 
-        Linna Linna1 = new Linna(100, 60);
-        Linna1.elamat = 3;
+        PhysicsObject Linna1 = new PhysicsObject(100, 60);
         Linna1.Image = Linnankuva1;
         Linna1.Position = paikka;
         Linna1.Tag = "Linna1";
@@ -315,7 +301,7 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoLinna2(Vector paikka, double leveys, double korkeus)
     {
-        Linna Linna2 = new Linna(100, 60);
+        PhysicsObject Linna2 = new PhysicsObject(100, 60);
         Linna2.Position = paikka;
         Linna2.Image = LinnanKuva2;
         Linna2.Tag = "Linna2";

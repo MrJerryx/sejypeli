@@ -29,13 +29,11 @@ public class InvadeTheCastle : PhysicsGame
     Cannon pelaajan1Ase;
     Cannon pelaajan2Ase;
 
-    Flame Liekki;
-
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
     Image liekki = LoadImage("liekki");
 
-    SoundEffect aani1 = LoadSoundEffect("Bow_Fire_Arrow");
+    //SoundEffect aani1 = LoadSoundEffect("aani1");
 
     public override void Begin()
     {
@@ -50,32 +48,29 @@ public class InvadeTheCastle : PhysicsGame
         
 
         Keyboard.Listen(Key.A, ButtonState.Down,
-         LiikutaPelaajaa, null, new Vector(-10000, 0));
+         LiikutaPelaajaa, null, double(-10000.0));
         Keyboard.Listen(Key.D, ButtonState.Down,
-          LiikutaPelaajaa, null, new Vector(10000, 0));
+          LiikutaPelaajaa, null, double(10000.0));
         Keyboard.Listen(Key.W, ButtonState.Down,
-          LiikutaPelaajaa, null, new Vector(0, 1000));
+          Hyppää1, null);
 
         Keyboard.Listen(Key.Left, ButtonState.Down,
-          LiikutaPelaajaa2, null, new Vector(-10000, 0));
+          LiikutaPelaajaa2, null, double(-10000.0));
         Keyboard.Listen(Key.Right, ButtonState.Down,
-          LiikutaPelaajaa2, null, new Vector(10000, 0));
+          LiikutaPelaajaa2, null, double (10000.0));
         Keyboard.Listen(Key.Up, ButtonState.Down,
-          LiikutaPelaajaa2, null, new Vector(0, 1000));
+          Hyppää2, null);
 
         Keyboard.Listen(Key.A, ButtonState.Released,
-         LiikutaPelaajaa, null, new Vector(0, 0));
+         LiikutaPelaajaa, null, double(0.0));
         Keyboard.Listen(Key.D, ButtonState.Released,
-          LiikutaPelaajaa, null, new Vector(0, 0));
-        Keyboard.Listen(Key.W, ButtonState.Released,
-          LiikutaPelaajaa, null, new Vector(0, 0));
+          LiikutaPelaajaa, null, double(0.0));
 
         Keyboard.Listen(Key.Left, ButtonState.Released,
-          LiikutaPelaajaa2, null, new Vector(0, 0));
+          LiikutaPelaajaa2, null, double(0.0));
         Keyboard.Listen(Key.Right, ButtonState.Released,
-          LiikutaPelaajaa2, null, new Vector(0, 0));
-        Keyboard.Listen(Key.Up, ButtonState.Released,
-          LiikutaPelaajaa2, null, new Vector(0, 0));
+          LiikutaPelaajaa2, null, double(0.0));
+
 
         Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaajan1Ase);
         Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaajan2Ase);
@@ -179,17 +174,11 @@ public class InvadeTheCastle : PhysicsGame
     void LuoAjastin()
     {
         Timer ajastin1 = new Timer();
-        ajastin1.Interval = 1.5;
+        ajastin1.Interval = 10.0;
         ajastin1.Timeout += Liekit;
+        ajastin1.Timeout += Liekit2;
         ajastin1.Start();
-
-        Timer ajastin2 = new Timer();
-        ajastin2.Interval = 2.5;
-        ajastin2.Timeout += LiekitPois;
-        ajastin2.Start();
     }
-
-   
 
     void LuoPelaaja1(Vector paikka, double leveys, double korkeus)
    
@@ -205,7 +194,7 @@ public class InvadeTheCastle : PhysicsGame
 
         pelaajan1Ase.Image = Jouskari;
 
-        pelaajan1Ase.AttackSound = aani1;
+       // pelaajan1Ase.AttackSound = aani1;
 
         pelaajan1Ase.Power.DefaultValue = 10000;
 
@@ -336,28 +325,60 @@ public class InvadeTheCastle : PhysicsGame
     }
 
     void Liekit()
+    {
+        int y = -290;
+        for (int x=-725; x >= -825; x -= 50)
+        {
+            LuoLiekki(x, y);
+        }
+    }
 
+    void LuoLiekki(int x, int y)
     {
         Flame Liekki = new Flame(liekki);
-        Liekki.Position = new Vector(10,10);
+        Liekki.LifetimeLeft = TimeSpan.FromSeconds(6.0);
+        Liekki.X = x;
+        Liekki.Y = y;
         Add(Liekki);
     }
 
-    void LiekitPois()
+    void Liekit2()
     {
-        Remove(Liekki);
+        int y = -290;
+        for (int x = 725; x <= 825; x += 50)
+        {
+            LuoLiekki2(x, y);
+        }
     }
 
-    void LiikutaPelaajaa2(Vector vektori)
+    void LuoLiekki2(int x, int y)
     {
-        pelaaja2.Push(vektori);
+        Flame Liekki2 = new Flame(liekki);
+        Liekki2.LifetimeLeft = TimeSpan.FromSeconds(6.0);
+        Liekki2.X = x;
+        Liekki2.Y = y;
+        Add(Liekki2);
     }
 
-    void LiikutaPelaajaa(Vector vektori)
+    void LiikutaPelaajaa2(double vektori)
     {
-        pelaaja1.Push(vektori);
+        pelaaja2.Walk(vektori);
     }
 
+    void LiikutaPelaajaa(double vektori)
+    {
+        pelaaja1.Walk(vektori);
+    }
+
+    void Hyppää1()
+    {
+        pelaaja1.Jump(500);
+    }
+
+    void Hyppää2()
+    {
+        pelaaja2.Jump(500);
+    }
 
 }
 

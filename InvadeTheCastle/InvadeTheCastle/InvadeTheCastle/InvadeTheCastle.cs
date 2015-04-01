@@ -29,9 +29,13 @@ public class InvadeTheCastle : PhysicsGame
     Cannon pelaajan1Ase;
     Cannon pelaajan2Ase;
 
+    Flame Liekki;
+
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
     Image liekki = LoadImage("liekki");
+
+    SoundEffect aani1 = LoadSoundEffect("Bow_Fire_Arrow");
 
     public override void Begin()
     {
@@ -40,7 +44,7 @@ public class InvadeTheCastle : PhysicsGame
         LuoLaskuri2();
         LuoElamaLaskuri1();
         LuoElamaLaskuri2();
-        Liekit();
+        LuoAjastin();
 
         Camera.ZoomToAllObjects();
         
@@ -171,6 +175,20 @@ public class InvadeTheCastle : PhysicsGame
 
     }
 
+
+    void LuoAjastin()
+    {
+        Timer ajastin1 = new Timer();
+        ajastin1.Interval = 1.5;
+        ajastin1.Timeout += Liekit;
+        ajastin1.Start();
+
+        Timer ajastin2 = new Timer();
+        ajastin2.Interval = 2.5;
+        ajastin2.Timeout += LiekitPois;
+        ajastin2.Start();
+    }
+
    
 
     void LuoPelaaja1(Vector paikka, double leveys, double korkeus)
@@ -183,7 +201,13 @@ public class InvadeTheCastle : PhysicsGame
 
         pelaajan1Ase = new Cannon(30, 30);
 
+        pelaajan1Ase.X = 10.0;
+
         pelaajan1Ase.Image = Jouskari;
+
+        pelaajan1Ase.AttackSound = aani1;
+
+        pelaajan1Ase.Power.DefaultValue = 10000;
 
         pelaajan1Ase.Ammo.Value = 1000;
 
@@ -317,6 +341,11 @@ public class InvadeTheCastle : PhysicsGame
         Flame Liekki = new Flame(liekki);
         Liekki.Position = new Vector(10,10);
         Add(Liekki);
+    }
+
+    void LiekitPois()
+    {
+        Remove(Liekki);
     }
 
     void LiikutaPelaajaa2(Vector vektori)

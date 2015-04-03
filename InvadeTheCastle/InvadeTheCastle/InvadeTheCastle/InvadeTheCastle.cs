@@ -26,14 +26,11 @@ public class InvadeTheCastle : PhysicsGame
     IntMeter ElamaLaskuri1;
     IntMeter ElamaLaskuri2;
 
-    Cannon pelaajan1Ase;
-    Cannon pelaajan2Ase;
-
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
     Image liekki = LoadImage("liekki");
 
-    //SoundEffect aani1 = LoadSoundEffect("aani1");
+    SoundEffect aani1 = LoadSoundEffect("aani1");
 
     public override void Begin()
     {
@@ -44,36 +41,27 @@ public class InvadeTheCastle : PhysicsGame
         LuoElamaLaskuri2();
         LuoAjastin();
 
-        Camera.ZoomToAllObjects();
+        Camera.ZoomToLevel();
         
 
         Keyboard.Listen(Key.A, ButtonState.Down,
-         LiikutaPelaajaa, null, double(-10000.0));
+         LiikuVasempaan, null);
         Keyboard.Listen(Key.D, ButtonState.Down,
-          LiikutaPelaajaa, null, double(10000.0));
+          LiikuOikeaan, null);
         Keyboard.Listen(Key.W, ButtonState.Down,
           Hyppää1, null);
 
         Keyboard.Listen(Key.Left, ButtonState.Down,
-          LiikutaPelaajaa2, null, double(-10000.0));
+          LiikuVasempaan2, null);
         Keyboard.Listen(Key.Right, ButtonState.Down,
-          LiikutaPelaajaa2, null, double (10000.0));
+          LiikuOikeaan2, null);
         Keyboard.Listen(Key.Up, ButtonState.Down,
           Hyppää2, null);
 
-        Keyboard.Listen(Key.A, ButtonState.Released,
-         LiikutaPelaajaa, null, double(0.0));
-        Keyboard.Listen(Key.D, ButtonState.Released,
-          LiikutaPelaajaa, null, double(0.0));
-
-        Keyboard.Listen(Key.Left, ButtonState.Released,
-          LiikutaPelaajaa2, null, double(0.0));
-        Keyboard.Listen(Key.Right, ButtonState.Released,
-          LiikutaPelaajaa2, null, double(0.0));
 
 
-        Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaajan1Ase);
-        Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaajan2Ase);
+        Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaaja1);
+        Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaaja2);
 
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
@@ -186,25 +174,26 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1 = new PlatformCharacter(20, 30);
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "pelaaja1";
+        pelaaja1.TurnsWhenWalking = true;
         Add(pelaaja1);
 
-        pelaajan1Ase = new Cannon(30, 30);
+        pelaaja1.Weapon = new Cannon(15, 45);
 
-        pelaajan1Ase.X = 10.0;
+        pelaaja1.Weapon.X = 10.0;
 
-        pelaajan1Ase.Image = Jouskari;
+        pelaaja1.Weapon.Image = Jouskari;
 
-       // pelaajan1Ase.AttackSound = aani1;
+        pelaaja1.Weapon.AttackSound = aani1;
 
-        pelaajan1Ase.Power.DefaultValue = 10000;
+        pelaaja1.Weapon.Power.DefaultValue = 10000;
 
-        pelaajan1Ase.Ammo.Value = 1000;
+        pelaaja1.Weapon.Ammo.Value = 1000;
 
-        pelaajan1Ase.CanHitOwner = false;
+        pelaaja1.Weapon.CanHitOwner = false;
 
-        pelaajan1Ase.ProjectileCollision = AmmusOsui;
-        
-        pelaaja1.Add(pelaajan1Ase);
+        pelaaja1.Weapon.ProjectileCollision = AmmusOsui;
+
+        pelaaja1.Add(pelaaja1.Weapon);
     }
 
     void LuoPelaaja2(Vector paikka, double leveys, double korkeus)
@@ -212,19 +201,24 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja2 = new PlatformCharacter(20, 30);
         pelaaja2.Position = paikka;
         pelaaja2.Tag = "pelaaja2";
+        pelaaja2.TurnsWhenWalking = true;
         Add(pelaaja2);
 
-        pelaajan2Ase = new Cannon(30, 30);
+        pelaaja2.Weapon = new Cannon(15, 45);
 
-        pelaajan2Ase.Image = Jouskari;
+        pelaaja2.Weapon.X = -10.0;
 
-        pelaajan2Ase.Ammo.Value = 1000;
+        pelaaja2.Weapon.Image = Jouskari;
 
-        pelaajan2Ase.CanHitOwner = false;
+        pelaaja2.Weapon.AttackSound = aani1;
 
-        pelaajan2Ase.ProjectileCollision = AmmusOsui2;
+        pelaaja2.Weapon.Ammo.Value = 1000;
 
-        pelaaja2.Add(pelaajan2Ase);
+        pelaaja2.Weapon.CanHitOwner = false;
+
+        pelaaja2.Weapon.ProjectileCollision = AmmusOsui2;
+
+        pelaaja2.Add(pelaaja2.Weapon);
     }
 
     void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
@@ -243,24 +237,23 @@ public class InvadeTheCastle : PhysicsGame
 
     }
 
-
     void AmmusOsui2(PhysicsObject ammus, PhysicsObject kohde)
     {
+
         if (kohde.Tag == "pelaaja1")
         {
             Remove(kohde);
         }
 
         if (kohde.Tag == "Linna1")
-
         {
             Laskuri1.Value -= 500;
         }
-    }
 
-    void AmmuAseella(Cannon ase)
+    }
+    void AmmuAseella(PlatformCharacter pelaaja)
     {
-        PhysicsObject ammus = ase.Shoot();
+        PhysicsObject ammus = pelaaja.Weapon.Shoot();
 
         if (ammus != null)
         {
@@ -271,8 +264,8 @@ public class InvadeTheCastle : PhysicsGame
             ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
             ammus.CanRotate = false;
         }
+
     }
-   
 
     void LuoTaso(Vector paikka, double leveys, double korkeus)
     {
@@ -360,14 +353,28 @@ public class InvadeTheCastle : PhysicsGame
         Add(Liekki2);
     }
 
-    void LiikutaPelaajaa2(double vektori)
+    void LiikuOikeaan()
     {
-        pelaaja2.Walk(vektori);
+        pelaaja1.Walk(300);
+        pelaaja1.FacingDirection = Direction.Right;
     }
 
-    void LiikutaPelaajaa(double vektori)
+    void LiikuVasempaan()
     {
-        pelaaja1.Walk(vektori);
+        pelaaja1.Walk(-300);
+        pelaaja1.FacingDirection = Direction.Left;
+    }
+
+    void LiikuOikeaan2()
+    {
+        pelaaja2.Walk(300);
+        pelaaja2.FacingDirection = Direction.Right;
+    }
+
+    void LiikuVasempaan2()
+    {
+        pelaaja2.Walk(-300);
+        pelaaja2.FacingDirection = Direction.Left;
     }
 
     void Hyppää1()

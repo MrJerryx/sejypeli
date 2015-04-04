@@ -91,6 +91,8 @@ public class InvadeTheCastle : PhysicsGame
     {
         Laskuri1 = new DoubleMeter(3000);
         Laskuri1.MaxValue = 3000;
+        Laskuri1.MinValue = 0;
+        Laskuri1.LowerLimit += Pelaaja1Haviaa;
 
 
         ProgressBar Palkki1 = new ProgressBar(300, 30);
@@ -112,6 +114,8 @@ public class InvadeTheCastle : PhysicsGame
     {
         Laskuri2 = new DoubleMeter(3000);
         Laskuri2.MaxValue = 3000;
+        Laskuri2.MinValue = 0;
+        Laskuri2.LowerLimit += Pelaaja2Haviaa;
       
 
         ProgressBar Palkki2 = new ProgressBar(300, 30);
@@ -132,6 +136,7 @@ public class InvadeTheCastle : PhysicsGame
     {
         ElamaLaskuri1 = new IntMeter(0);
 
+
         Label ElamaNaytto1 = new Label();
         ElamaNaytto1.X = Screen.Left + 100;
         ElamaNaytto1.Y = Screen.Top - 100;
@@ -146,6 +151,7 @@ public class InvadeTheCastle : PhysicsGame
     void LuoElamaLaskuri2()
     {
         ElamaLaskuri2 = new IntMeter(0);
+
 
         Label ElamaNaytto2 = new Label();
         ElamaNaytto2.X = Screen.Right - 100;
@@ -175,6 +181,7 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "pelaaja1";
         pelaaja1.TurnsWhenWalking = true;
+        AddCollisionHandler(pelaaja1, tormays);
         Add(pelaaja1);
 
         pelaaja1.Weapon = new Cannon(15, 45);
@@ -202,6 +209,7 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja2.Position = paikka;
         pelaaja2.Tag = "pelaaja2";
         pelaaja2.TurnsWhenWalking = true;
+        AddCollisionHandler(pelaaja2, tormays);
         Add(pelaaja2);
 
         pelaaja2.Weapon = new Cannon(15, 45);
@@ -232,7 +240,7 @@ public class InvadeTheCastle : PhysicsGame
 
         if (kohde.Tag == "Linna2")
         {
-            Laskuri2.Value -= 500;
+            Laskuri2.Value -= 250;
         }
 
     }
@@ -247,7 +255,7 @@ public class InvadeTheCastle : PhysicsGame
 
         if (kohde.Tag == "Linna1")
         {
-            Laskuri1.Value -= 500;
+            Laskuri1.Value -= 250;
         }
 
     }
@@ -296,7 +304,7 @@ public class InvadeTheCastle : PhysicsGame
     void LuoLinna1(Vector paikka, double leveys, double korkeus)
     {
 
-        PhysicsObject Linna1 = new PhysicsObject(100, 60);
+        PhysicsObject Linna1 = new PhysicsObject(200, 120);
         Linna1.Image = Linnankuva1;
         Linna1.Position = paikka;
         Linna1.Tag = "Linna1";
@@ -333,6 +341,15 @@ public class InvadeTheCastle : PhysicsGame
         Liekki.X = x;
         Liekki.Y = y;
         Add(Liekki);
+
+        PhysicsObject liekki1 = new PhysicsObject(20, 200);
+        liekki1.LifetimeLeft = TimeSpan.FromSeconds(6.0);
+        liekki1.X = x;
+        liekki1.Y = y;
+        liekki1.CollisionIgnoreGroup = 1;
+        liekki1.IsVisible = false;
+        liekki1.Tag = "liekki";
+        Add(liekki1);
     }
 
     void Liekit2()
@@ -351,6 +368,24 @@ public class InvadeTheCastle : PhysicsGame
         Liekki2.X = x;
         Liekki2.Y = y;
         Add(Liekki2);
+
+        PhysicsObject liekki2 = new PhysicsObject(30, 200);
+        liekki2.LifetimeLeft = TimeSpan.FromSeconds(6.0);
+        liekki2.X = x;
+        liekki2.Y = y;
+        liekki2.CollisionIgnoreGroup = 1;
+        liekki2.IsVisible = false;
+        liekki2.Tag = "liekki";
+        Add(liekki2);
+
+    }
+
+    void tormays(PhysicsObject tormaaja, PhysicsObject kohde)
+    {
+        if (kohde.Tag == "liekki")
+        {
+            tormaaja.Destroy();
+        }
     }
 
     void LiikuOikeaan()
@@ -385,6 +420,16 @@ public class InvadeTheCastle : PhysicsGame
     void Hyppää2()
     {
         pelaaja2.Jump(500);
+    }
+
+    void Pelaaja1Haviaa()
+    {
+        MessageDisplay.Add("Pelaaja 1 hävisi pelin.");
+    }
+
+    void Pelaaja2Haviaa()
+    {
+        MessageDisplay.Add("Pelaaja 2 hävisi pelin.");
     }
 
 }

@@ -45,13 +45,6 @@
     <Reference Include="AnimationExtension" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kentta.png">
-      <Name>Kentta</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="LinnanKuva1.png">
       <Name>LinnanKuva1</Name>
       <Importer>TextureImporter</Importer>
@@ -66,8 +59,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kentta2.png">
-      <Name>Kentta2</Name>
+    <Compile Include="Kentta.png">
+      <Name>Kentta</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

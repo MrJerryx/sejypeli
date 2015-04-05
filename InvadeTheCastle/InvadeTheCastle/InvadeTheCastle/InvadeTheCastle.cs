@@ -14,9 +14,6 @@ public class InvadeTheCastle : PhysicsGame
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
 
-    PhysicsObject Linna1;
-    PhysicsObject Linna2;
-
     Image Linnankuva1 = LoadImage("LinnanKuva1");
     Image LinnanKuva2 = LoadImage("LinnanKuva2");
 
@@ -32,18 +29,12 @@ public class InvadeTheCastle : PhysicsGame
 
     SoundEffect aani1 = LoadSoundEffect("aani1");
 
+ 
+
     public override void Begin()
     {
-        LuoKentta();
-        LuoLaskuri1();
-        LuoLaskuri2();
-        LuoElamaLaskuri1();
-        LuoElamaLaskuri2();
-        LuoAjastin();
-
-        Camera.ZoomToLevel();
-        
-
+        valikko();
+       
         Keyboard.Listen(Key.A, ButtonState.Down,
          LiikuVasempaan, null);
         Keyboard.Listen(Key.D, ButtonState.Down,
@@ -66,10 +57,20 @@ public class InvadeTheCastle : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
+    void valikko()
+    {
+        MultiSelectWindow alkuValikko = new MultiSelectWindow("Pelin alkuvalikko",
+        "Aloita peli", "Lopeta");
+        Add(alkuValikko);
+
+        alkuValikko.AddItemHandler(0, LuoKentta);
+        alkuValikko.AddItemHandler(1, Exit);
+    }
+
     void LuoKentta()
     {
         
-        ColorTileMap ruudut = ColorTileMap.FromLevelAsset("Kentta2");
+        ColorTileMap ruudut = ColorTileMap.FromLevelAsset("Kentta");
 
 
         ruudut.SetTileMethod(Color.Red, LuoPelaaja1);
@@ -85,7 +86,19 @@ public class InvadeTheCastle : PhysicsGame
         ruudut.Execute(50, 20);
         
         Gravity = new Vector(0.0, -800.0);
+
+
+        LuoLaskuri1();
+        LuoLaskuri2();
+        LuoElamaLaskuri1();
+        LuoElamaLaskuri2();
+        LuoAjastin();
+
+        Camera.ZoomToLevel();
+
     }
+
+  
   
     void LuoLaskuri1()
     {
@@ -134,8 +147,9 @@ public class InvadeTheCastle : PhysicsGame
     void LuoElamaLaskuri1()
 
     {
-        ElamaLaskuri1 = new IntMeter(0);
-
+        ElamaLaskuri1 = new IntMeter(10);
+        ElamaLaskuri1.MinValue = 0;
+        ElamaLaskuri1.LowerLimit += UusiPelaaja1;
 
         Label ElamaNaytto1 = new Label();
         ElamaNaytto1.X = Screen.Left + 100;
@@ -150,8 +164,9 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoElamaLaskuri2()
     {
-        ElamaLaskuri2 = new IntMeter(0);
-
+        ElamaLaskuri2 = new IntMeter(10);
+        ElamaLaskuri2.MinValue = 0;
+        ElamaLaskuri2.LowerLimit += UusiPelaaja2;
 
         Label ElamaNaytto2 = new Label();
         ElamaNaytto2.X = Screen.Right - 100;
@@ -183,6 +198,7 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1.TurnsWhenWalking = true;
         AddCollisionHandler(pelaaja1, tormays);
         Add(pelaaja1);
+
 
         pelaaja1.Weapon = new Cannon(15, 45);
 
@@ -235,7 +251,7 @@ public class InvadeTheCastle : PhysicsGame
         if (kohde.Tag == "pelaaja2")
 
         {
-            Remove(kohde);
+            pelaaja2kuoli();
         }
 
         if (kohde.Tag == "Linna2")
@@ -250,7 +266,7 @@ public class InvadeTheCastle : PhysicsGame
 
         if (kohde.Tag == "pelaaja1")
         {
-            Remove(kohde);
+            pelaaja1kuoli();
         }
 
         if (kohde.Tag == "Linna1")
@@ -261,7 +277,7 @@ public class InvadeTheCastle : PhysicsGame
     }
     void AmmuAseella(PlatformCharacter pelaaja)
     {
-        PhysicsObject ammus = pelaaja.Weapon.Shoot();
+        PhysicsObject ammus = pelaaja1.Weapon.Shoot();
 
         if (ammus != null)
         {
@@ -384,7 +400,15 @@ public class InvadeTheCastle : PhysicsGame
     {
         if (kohde.Tag == "liekki")
         {
-            tormaaja.Destroy();
+            if (tormaaja.Tag == "pelaaja1")
+            {
+                pelaaja1kuoli();
+            }
+
+            if (tormaaja.Tag == "pelaaja2")
+            {
+                pelaaja2kuoli();
+            }
         }
     }
 
@@ -430,6 +454,32 @@ public class InvadeTheCastle : PhysicsGame
     void Pelaaja2Haviaa()
     {
         MessageDisplay.Add("Pelaaja 2 hävisi pelin.");
+    }
+
+    void UusiPelaaja1()
+    {
+        Vector paikka = new Vector(0, 0);
+        pelaaja1.Position = paikka;
+        ElamaLaskuri1.Reset();
+    }
+
+    void UusiPelaaja2()
+    {
+        Vector paikka = new Vector(0, 0);
+        pelaaja2.Position = paikka;
+        ElamaLaskuri2.Reset();
+    }
+
+    void pelaaja1kuoli()
+    {
+        pelaaja1.Y = -10000;
+        ElamaLaskuri1.AddOverTime(-10, 10);
+    }
+
+    void pelaaja2kuoli()
+    {
+        pelaaja2.Y = -10000;
+        ElamaLaskuri2.AddOverTime(-10, 10);
     }
 
 }

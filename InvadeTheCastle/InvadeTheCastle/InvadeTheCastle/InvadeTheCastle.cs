@@ -23,41 +23,19 @@ public class InvadeTheCastle : PhysicsGame
     IntMeter ElamaLaskuri1;
     IntMeter ElamaLaskuri2;
 
+
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
     Image liekki = LoadImage("liekki");
 
     SoundEffect aani1 = LoadSoundEffect("aani1");
 
- 
-
     public override void Begin()
     {
-        valikko();
-       
-        Keyboard.Listen(Key.A, ButtonState.Down,
-         LiikuVasempaan, null);
-        Keyboard.Listen(Key.D, ButtonState.Down,
-          LiikuOikeaan, null);
-        Keyboard.Listen(Key.W, ButtonState.Down,
-          Hyppää1, null);
-
-        Keyboard.Listen(Key.Left, ButtonState.Down,
-          LiikuVasempaan2, null);
-        Keyboard.Listen(Key.Right, ButtonState.Down,
-          LiikuOikeaan2, null);
-        Keyboard.Listen(Key.Up, ButtonState.Down,
-          Hyppää2, null);
-
-
-
-        Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaaja1);
-        Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaaja2);
-
-        Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
+        Alkuvalikko();        
     }
 
-    void valikko()
+    void Alkuvalikko()
     {
         MultiSelectWindow alkuValikko = new MultiSelectWindow("Pelin alkuvalikko",
         "Aloita peli", "Lopeta");
@@ -93,19 +71,41 @@ public class InvadeTheCastle : PhysicsGame
         LuoElamaLaskuri1();
         LuoElamaLaskuri2();
         LuoAjastin();
+        LuoOhjaimet();
 
         Camera.ZoomToLevel();
 
     }
 
-  
+    void LuoOhjaimet()
+    {
+
+        Keyboard.Listen(Key.A, ButtonState.Down,
+         LiikuVasempaan, null);
+        Keyboard.Listen(Key.D, ButtonState.Down,
+          LiikuOikeaan, null);
+        Keyboard.Listen(Key.W, ButtonState.Down,
+          Hyppää1, null);
+
+        Keyboard.Listen(Key.Left, ButtonState.Down,
+          LiikuVasempaan2, null);
+        Keyboard.Listen(Key.Right, ButtonState.Down,
+          LiikuOikeaan2, null);
+        Keyboard.Listen(Key.Up, ButtonState.Down,
+          Hyppää2, null);
+
+        Keyboard.Listen(Key.Space, ButtonState.Down, AmmuAseella, "Ammu", pelaaja1);
+        Keyboard.Listen(Key.NumPad0, ButtonState.Down, AmmuAseella, "Ammu", pelaaja2);
+
+        Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
+    }
   
     void LuoLaskuri1()
     {
         Laskuri1 = new DoubleMeter(3000);
         Laskuri1.MaxValue = 3000;
         Laskuri1.MinValue = 0;
-        Laskuri1.LowerLimit += Pelaaja1Haviaa;
+        Laskuri1.LowerLimit += Pelaaja2Voittaa;
 
 
         ProgressBar Palkki1 = new ProgressBar(300, 30);
@@ -121,14 +121,13 @@ public class InvadeTheCastle : PhysicsGame
 
     }
 
- 
 
     void LuoLaskuri2()
     {
         Laskuri2 = new DoubleMeter(3000);
         Laskuri2.MaxValue = 3000;
         Laskuri2.MinValue = 0;
-        Laskuri2.LowerLimit += Pelaaja2Haviaa;
+        Laskuri2.LowerLimit += Pelaaja1Voittaa;
       
 
         ProgressBar Palkki2 = new ProgressBar(300, 30);
@@ -182,17 +181,17 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoAjastin()
     {
-        Timer ajastin1 = new Timer();
-        ajastin1.Interval = 10.0;
-        ajastin1.Timeout += Liekit;
-        ajastin1.Timeout += Liekit2;
-        ajastin1.Start();
+        Timer ajastin = new Timer();
+        ajastin.Interval = 10.0;
+        ajastin.Timeout += Liekit;
+        ajastin.Timeout += Liekit2;
+        ajastin.Start();
     }
 
     void LuoPelaaja1(Vector paikka, double leveys, double korkeus)
    
     {
-        pelaaja1 = new PlatformCharacter(20, 30);
+        pelaaja1 = new PlatformCharacter(30, 40);
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "pelaaja1";
         pelaaja1.TurnsWhenWalking = true;
@@ -221,7 +220,7 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoPelaaja2(Vector paikka, double leveys, double korkeus)
     {
-        pelaaja2 = new PlatformCharacter(20, 30);
+        pelaaja2 = new PlatformCharacter(30, 40);
         pelaaja2.Position = paikka;
         pelaaja2.Tag = "pelaaja2";
         pelaaja2.TurnsWhenWalking = true;
@@ -230,7 +229,7 @@ public class InvadeTheCastle : PhysicsGame
 
         pelaaja2.Weapon = new Cannon(15, 45);
 
-        pelaaja2.Weapon.X = -10.0;
+        pelaaja2.Weapon.X = 10.0;
 
         pelaaja2.Weapon.Image = Jouskari;
 
@@ -277,18 +276,17 @@ public class InvadeTheCastle : PhysicsGame
     }
     void AmmuAseella(PlatformCharacter pelaaja)
     {
-        PhysicsObject ammus = pelaaja1.Weapon.Shoot();
+            PhysicsObject ammus = pelaaja.Weapon.Shoot();
 
-        if (ammus != null)
-        {
-            ammus.Width = 25;
-            ammus.Height = 5;
-            ammus.Image = Nuoli;
-            ammus.CollisionIgnoreGroup = 1;
-            ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
-            ammus.CanRotate = false;
-        }
-
+            if (ammus != null)
+            {
+                ammus.Width = 25;
+                ammus.Height = 5;
+                ammus.Image = Nuoli;
+                ammus.CollisionIgnoreGroup = 1;
+                ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
+                ammus.CanRotate = false;
+            }
     }
 
     void LuoTaso(Vector paikka, double leveys, double korkeus)
@@ -311,16 +309,19 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoAnsa2(Vector paikka, double leveys, double korkeus)
     {
-        PhysicsObject Ansa2 = new PhysicsObject(50, 20);
+        PhysicsObject Ansa2 = new PhysicsObject(50, 22);
         Ansa2.Position = paikka;
         Ansa2.IgnoresGravity = true;
+        Ansa2.IgnoresExplosions = true;
+        Ansa2.CollisionIgnoreGroup = 1;
+        Ansa2.Tag = "miina";
         Add(Ansa2);
     }
 
     void LuoLinna1(Vector paikka, double leveys, double korkeus)
     {
 
-        PhysicsObject Linna1 = new PhysicsObject(200, 120);
+        PhysicsObject Linna1 = new PhysicsObject(200, 100);
         Linna1.Image = Linnankuva1;
         Linna1.Position = paikka;
         Linna1.Tag = "Linna1";
@@ -331,7 +332,7 @@ public class InvadeTheCastle : PhysicsGame
 
     void LuoLinna2(Vector paikka, double leveys, double korkeus)
     {
-        PhysicsObject Linna2 = new PhysicsObject(100, 60);
+        PhysicsObject Linna2 = new PhysicsObject(200, 100);
         Linna2.Position = paikka;
         Linna2.Image = LinnanKuva2;
         Linna2.Tag = "Linna2";
@@ -396,8 +397,19 @@ public class InvadeTheCastle : PhysicsGame
 
     }
 
+    void rajahdys()
+    {
+       
+        Vector vektori2 = new Vector(-370, -310);
+        Explosion rajahdys2 = new Explosion(100);
+        rajahdys2.Position = vektori2;
+        Add(rajahdys2);
+    }
+
     void tormays(PhysicsObject tormaaja, PhysicsObject kohde)
     {
+        Vector vektori = kohde.Position;
+
         if (kohde.Tag == "liekki")
         {
             if (tormaaja.Tag == "pelaaja1")
@@ -410,6 +422,26 @@ public class InvadeTheCastle : PhysicsGame
                 pelaaja2kuoli();
             }
         }
+    {
+        if (kohde.Tag == "miina")
+        {
+            if (tormaaja.Tag == "pelaaja1")
+            {
+                Explosion rajahdys = new Explosion(100);
+                rajahdys.Position = vektori;
+                Add(rajahdys);
+                kohde.Destroy();
+            }
+
+            if (tormaaja.Tag == "pelaaja2")
+            {
+                Explosion rajahdys = new Explosion(100);
+                rajahdys.Position = vektori;
+                Add(rajahdys);
+                kohde.Destroy();
+            }
+        }
+    }
     }
 
     void LiikuOikeaan()
@@ -438,34 +470,38 @@ public class InvadeTheCastle : PhysicsGame
 
     void Hyppää1()
     {
-        pelaaja1.Jump(500);
+        pelaaja1.Jump(250);
     }
 
     void Hyppää2()
     {
-        pelaaja2.Jump(500);
+        pelaaja2.Jump(250);
     }
 
-    void Pelaaja1Haviaa()
+    void Pelaaja1Voittaa()
     {
-        MessageDisplay.Add("Pelaaja 1 hävisi pelin.");
+        Widget ruutu = new Widget(3000.0, 900.0);
+        Add(ruutu);
+        Alkuvalikko();
     }
 
-    void Pelaaja2Haviaa()
+    void Pelaaja2Voittaa()
     {
-        MessageDisplay.Add("Pelaaja 2 hävisi pelin.");
+        Widget ruutu = new Widget(3000.0, 900.0);
+        Add(ruutu);
+        Alkuvalikko();
     }
 
     void UusiPelaaja1()
     {
-        Vector paikka = new Vector(0, 0);
+        Vector paikka = new Vector(-1200, -200);
         pelaaja1.Position = paikka;
         ElamaLaskuri1.Reset();
     }
 
     void UusiPelaaja2()
     {
-        Vector paikka = new Vector(0, 0);
+        Vector paikka = new Vector(1200, -200);
         pelaaja2.Position = paikka;
         ElamaLaskuri2.Reset();
     }

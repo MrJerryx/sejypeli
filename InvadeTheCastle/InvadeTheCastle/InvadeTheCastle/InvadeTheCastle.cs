@@ -34,6 +34,7 @@ public class InvadeTheCastle : PhysicsGame
     Image pelaaja2voitti = LoadImage("pelaaja2voitti");
 
     SoundEffect aani1 = LoadSoundEffect("aani1");
+    SoundEffect Voitto = LoadSoundEffect("Voitto");
 
     public override void Begin()
     {
@@ -256,7 +257,7 @@ public class InvadeTheCastle : PhysicsGame
 
         if (kohde.Tag == "Linna2")
         {
-            Laskuri2.Value -= 250;
+            Laskuri2.Value -= 100;
         }
 
     }
@@ -271,7 +272,7 @@ public class InvadeTheCastle : PhysicsGame
 
         if (kohde.Tag == "Linna1")
         {
-            Laskuri1.Value -= 250;
+            Laskuri1.Value -= 100;
         }
 
     }
@@ -494,6 +495,7 @@ public class InvadeTheCastle : PhysicsGame
         Widget ruutu = new Widget(500, 500);
         ruutu.Image = pelaaja1voitti;
         Add(ruutu);
+        Voitto.Play();
         LoppuValikko();
     }
 
@@ -502,19 +504,20 @@ public class InvadeTheCastle : PhysicsGame
         Widget ruutu2 = new Widget(500, 500);
         ruutu2.Image = pelaaja2voitti;
         Add(ruutu2);
+        Voitto.Play();
         LoppuValikko();
     }
 
     void UusiPelaaja1()
     {
-        Vector paikka = new Vector(-1200, -200);
+        Vector paikka = new Vector(-1050, -200);
         pelaaja1.Position = paikka;
         ElamaLaskuri1.Reset();
     }
 
     void UusiPelaaja2()
     {
-        Vector paikka = new Vector(1200, -200);
+        Vector paikka = new Vector(1050, -200);
         pelaaja2.Position = paikka;
         ElamaLaskuri2.Reset();
     }

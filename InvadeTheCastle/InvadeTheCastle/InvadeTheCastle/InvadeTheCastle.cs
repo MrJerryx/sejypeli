@@ -14,8 +14,6 @@ public class InvadeTheCastle : PhysicsGame
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
 
-    Image Linnankuva1 = LoadImage("LinnanKuva1");
-    Image LinnanKuva2 = LoadImage("LinnanKuva2");
 
     DoubleMeter Laskuri1;
     DoubleMeter Laskuri2;
@@ -23,10 +21,17 @@ public class InvadeTheCastle : PhysicsGame
     IntMeter ElamaLaskuri1;
     IntMeter ElamaLaskuri2;
 
-
     Image Nuoli = LoadImage("Nuoli");
     Image Jouskari = LoadImage("jouskari");
     Image liekki = LoadImage("liekki");
+    Image Linnankuva1 = LoadImage("Linnankuva1");
+    Image LinnanKuva2 = LoadImage("Linnankuva2");
+    Image Pelaaja1 = LoadImage("pelaaja2");
+    Image Pelaaja2 = LoadImage("pelaaja1");
+    Image miina = LoadImage("Miina");
+    Image liekinheitin = LoadImage("LiekinHeitin");
+    Image pelaaja1voitti = LoadImage("pelaaja1voitti");
+    Image pelaaja2voitti = LoadImage("pelaaja2voitti");
 
     SoundEffect aani1 = LoadSoundEffect("aani1");
 
@@ -59,12 +64,8 @@ public class InvadeTheCastle : PhysicsGame
         ruudut.SetTileMethod(Color.Rose, LuoAnsa1);
         ruudut.SetTileMethod(Color.Orange, LuoAnsa2);
      
-       
-        
-        ruudut.Execute(50, 20);
-        
+        ruudut.Execute(50, 20);    
         Gravity = new Vector(0.0, -800.0);
-
 
         LuoLaskuri1();
         LuoLaskuri2();
@@ -72,9 +73,7 @@ public class InvadeTheCastle : PhysicsGame
         LuoElamaLaskuri2();
         LuoAjastin();
         LuoOhjaimet();
-
         Camera.ZoomToLevel();
-
     }
 
     void LuoOhjaimet()
@@ -194,12 +193,13 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1 = new PlatformCharacter(30, 40);
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "pelaaja1";
+        pelaaja1.Image = Pelaaja1;
         pelaaja1.TurnsWhenWalking = true;
         AddCollisionHandler(pelaaja1, tormays);
         Add(pelaaja1);
+        
 
-
-        pelaaja1.Weapon = new Cannon(15, 45);
+        pelaaja1.Weapon = new Cannon(10, 30);
 
         pelaaja1.Weapon.X = 10.0;
 
@@ -223,11 +223,12 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja2 = new PlatformCharacter(30, 40);
         pelaaja2.Position = paikka;
         pelaaja2.Tag = "pelaaja2";
+        pelaaja2.Image = Pelaaja2;
         pelaaja2.TurnsWhenWalking = true;
         AddCollisionHandler(pelaaja2, tormays);
         Add(pelaaja2);
 
-        pelaaja2.Weapon = new Cannon(15, 45);
+        pelaaja2.Weapon = new Cannon(10, 30);
 
         pelaaja2.Weapon.X = 10.0;
 
@@ -284,7 +285,7 @@ public class InvadeTheCastle : PhysicsGame
                 ammus.Height = 5;
                 ammus.Image = Nuoli;
                 ammus.CollisionIgnoreGroup = 1;
-                ammus.MaximumLifetime = TimeSpan.FromSeconds(2.0);
+                ammus.MaximumLifetime = TimeSpan.FromSeconds(1.0);
                 ammus.CanRotate = false;
             }
     }
@@ -293,7 +294,7 @@ public class InvadeTheCastle : PhysicsGame
     {
         PhysicsObject taso = PhysicsObject.CreateStaticObject(leveys, korkeus);
         taso.Position = paikka;
-        taso.Color = Color.Green;
+        taso.Color = Color.BrightGreen;
         Add(taso);
     }
 
@@ -304,6 +305,7 @@ public class InvadeTheCastle : PhysicsGame
         Ansa1.IgnoresGravity = true;
         Ansa1.CollisionIgnoreGroup = 1;
         Ansa1.Mass = 20000;
+        Ansa1.Image = liekinheitin;
         Add(Ansa1);
     }
 
@@ -315,6 +317,7 @@ public class InvadeTheCastle : PhysicsGame
         Ansa2.IgnoresExplosions = true;
         Ansa2.CollisionIgnoreGroup = 1;
         Ansa2.Tag = "miina";
+        Ansa2.Image = miina;
         Add(Ansa2);
     }
 
@@ -444,6 +447,14 @@ public class InvadeTheCastle : PhysicsGame
     }
     }
 
+    void LoppuValikko()
+    { 
+        MultiSelectWindow LoppuValikko = new MultiSelectWindow(" ", "Lopeta");
+        LoppuValikko.Color = Color.Transparent;
+        Add(LoppuValikko);
+        LoppuValikko.AddItemHandler(0, Exit);
+    }
+
     void LiikuOikeaan()
     {
         pelaaja1.Walk(300);
@@ -480,16 +491,18 @@ public class InvadeTheCastle : PhysicsGame
 
     void Pelaaja1Voittaa()
     {
-        Widget ruutu = new Widget(3000.0, 900.0);
+        Widget ruutu = new Widget(500, 500);
+        ruutu.Image = pelaaja1voitti;
         Add(ruutu);
-        Alkuvalikko();
+        LoppuValikko();
     }
 
     void Pelaaja2Voittaa()
     {
-        Widget ruutu = new Widget(3000.0, 900.0);
-        Add(ruutu);
-        Alkuvalikko();
+        Widget ruutu2 = new Widget(500, 500);
+        ruutu2.Image = pelaaja2voitti;
+        Add(ruutu2);
+        LoppuValikko();
     }
 
     void UusiPelaaja1()

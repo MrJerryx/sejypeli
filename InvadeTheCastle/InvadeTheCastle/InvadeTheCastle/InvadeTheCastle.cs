@@ -26,12 +26,12 @@ public class InvadeTheCastle : PhysicsGame
     Image liekki = LoadImage("liekki");
     Image Linnankuva1 = LoadImage("Linnankuva1");
     Image LinnanKuva2 = LoadImage("Linnankuva2");
-    Image Pelaaja1 = LoadImage("pelaaja2");
-    Image Pelaaja2 = LoadImage("pelaaja1");
+   // Image Pelaaja1 = LoadImage("pelaaja2");
+   // Image Pelaaja2 = LoadImage("pelaaja1");
     Image miina = LoadImage("Miina");
     Image liekinheitin = LoadImage("LiekinHeitin");
-    Image pelaaja1voitti = LoadImage("pelaaja1voitti");
-    Image pelaaja2voitti = LoadImage("pelaaja2voitti");
+   // Image pelaaja1voitti = LoadImage("pelaaja1voitti");
+  //  Image pelaaja2voitti = LoadImage("pelaaja2voitti");
 
     SoundEffect aani1 = LoadSoundEffect("aani1");
     SoundEffect Voitto = LoadSoundEffect("Voitto");
@@ -194,7 +194,7 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja1 = new PlatformCharacter(30, 40);
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "pelaaja1";
-        pelaaja1.Image = Pelaaja1;
+       // pelaaja1.Image = Pelaaja1;
         pelaaja1.TurnsWhenWalking = true;
         AddCollisionHandler(pelaaja1, tormays);
         Add(pelaaja1);
@@ -224,7 +224,7 @@ public class InvadeTheCastle : PhysicsGame
         pelaaja2 = new PlatformCharacter(30, 40);
         pelaaja2.Position = paikka;
         pelaaja2.Tag = "pelaaja2";
-        pelaaja2.Image = Pelaaja2;
+       // pelaaja2.Image = Pelaaja2;
         pelaaja2.TurnsWhenWalking = true;
         AddCollisionHandler(pelaaja2, tormays);
         Add(pelaaja2);
@@ -493,7 +493,7 @@ public class InvadeTheCastle : PhysicsGame
     void Pelaaja1Voittaa()
     {
         Widget ruutu = new Widget(500, 500);
-        ruutu.Image = pelaaja1voitti;
+       // ruutu.Image = pelaaja1voitti;
         Add(ruutu);
         Voitto.Play();
         LoppuValikko();
@@ -502,7 +502,7 @@ public class InvadeTheCastle : PhysicsGame
     void Pelaaja2Voittaa()
     {
         Widget ruutu2 = new Widget(500, 500);
-        ruutu2.Image = pelaaja2voitti;
+       // ruutu2.Image = pelaaja2voitti;
         Add(ruutu2);
         Voitto.Play();
         LoppuValikko();

@@ -2930,20 +2930,21 @@
             Jos metodia ei ole määritelty, kutsutaan Begin.
             </summary>
         </member>
-        <member name="M:Jypeli.Game.SetWindowSize(System.Int32,System.Int32,System.Boolean)">
-            <summary>
-            Asettaa ikkunan koon.
-            </summary>
-            <param name="width">Leveys.</param>
-            <param name="height">Korkeus.</param>
-            <param name="height">Käyttääkö peli koko ruutua.</param>
-        </member>
         <member name="M:Jypeli.Game.SetWindowSize(System.Int32,System.Int32)">
             <summary>
             Asettaa ikkunan koon.
             </summary>
             <param name="width">Leveys.</param>
             <param name="height">Korkeus.</param>
+        </member>
+        <member name="M:Jypeli.Game.SetWindowSize(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Asettaa ikkunan koon ja alustaa pelin käyttämään joko ikkunaa tai koko ruutua.
+            </summary>
+            <param name="width">Leveys.</param>
+            <param name="height">Korkeus.</param>
+            <param name="fullscreen">Koko ruutu jos <c>true</c>, muuten ikkuna.</param>
+            <returns></returns>
         </member>
         <member name="M:Jypeli.Game.Pause">
             <summary>
@@ -3071,11 +3072,6 @@
         <member name="P:Jypeli.Game.Screen">
             <summary>
             Näytön dimensiot, eli koko ja reunat.
-            </summary>
-        </member>
-        <member name="P:Jypeli.Game.Window">
-            <summary>
-            Ikkuna.
             </summary>
         </member>
         <member name="P:Jypeli.Game.Controls">
@@ -3551,163 +3547,6 @@
             <summary>
             Ruudukko. Ruudukko piirretään asettamalla tähän <c>Grid</c>-olio.
             Jos <c>null</c>, ruudukkoa ei piirretä.
-            </summary>
-        </member>
-        <member name="M:Jypeli.JypeliWindow.OnXnaMethod(System.EventHandler{System.EventArgs},System.Object,System.EventArgs)">
-            <summary>
-            Generic XNA event handler.
-            </summary>
-            <param name="method"></param>
-            <param name="sender"></param>
-            <param name="args"></param>
-        </member>
-        <member name="M:Jypeli.JypeliWindow.#ctor(Microsoft.Xna.Framework.GameWindow,Microsoft.Xna.Framework.GraphicsDeviceManager)">
-            <summary>
-            Luo uuden ikkunan xna-ikkunan perusteella.
-            </summary>
-            <param name="gameWindow"></param>
-            <param name="graphicsDeviceManager"></param>
-        </member>
-        <member name="M:Jypeli.JypeliWindow.BeginScreenDeviceChange(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="willBeFullScreen"></param>
-        </member>
-        <member name="M:Jypeli.JypeliWindow.EndScreenDeviceChange(System.String,System.Int32,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="screenDeviceName"></param>
-            <param name="clientWidth"></param>
-            <param name="clientHeight"></param>
-        </member>
-        <member name="M:Jypeli.JypeliWindow.Update">
-            <summary>
-            Kutsutaan Jypelin päivityssilmukasta.
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.ClientSizeChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.OrientationChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.ScreenDeviceNameChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.EnterFullscreen">
-            <summary>
-            Tapahtuu kun mennään koko ruudun tilaan.
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.ExitFullscreen">
-            <summary>
-            Tapahtuu kun poistutaan koko ruudun tilasta
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.Moved">
-            <summary>
-            Tapahtuu kun ikkunaa siirretään.
-            </summary>
-        </member>
-        <member name="E:Jypeli.JypeliWindow.Resized">
-            <summary>
-            Tapahtuu kun ikkunan kokoa on muutettu.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.AllowUserResizing">
-            <summary>
-            Voiko käyttäjä muuttaa ikkunan kokoa ikkunan reunasta.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.CurrentOrientation">
-            <summary>
-            Ikkunan asento puhelimessa (pysty tai vaaka)
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Title">
-            <summary>
-            Ikkunan otsikko.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Width">
-            <summary>
-            Ikkunan leveys.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Height">
-            <summary>
-            Ikkunan korkeus.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Fullscreen">
-            <summary>
-            Onko ikkuna koko näytön kokoinen ilman reunoja.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Handle">
-            <summary>
-            API-kahva ikkunaan.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.ScreenDeviceName">
-            <summary>
-            Näyttölaitteen nimi.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Left">
-            <summary>
-            Ikkunan vasemman reunan x-koordinaatti.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Top">
-            <summary>
-            Ikkunan yläreunan y-koordinaatti.
-            Huom. y kasvaa alaspäin!
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Right">
-            <summary>
-            Ikkunan oikean reunan x-koordinaatti.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Bottom">
-            <summary>
-            Ikkunan alareunan y-koordinaatti.
-            Huom. y kasvaa alaspäin!
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.X">
-            <summary>
-            Ikkunan keskikohdan x-koordinaatti.
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.Y">
-            <summary>
-            Ikkunan keskikohdan y-koordinaatti.
-            Huom. y kasvaa alaspäin!
-            </summary>
-        </member>
-        <member name="P:Jypeli.JypeliWindow.ClientBounds">
-            <summary>
-            Ikkunan koko ja paikka xna-neliönä.
-            </summary>
-        </member>
-        <member name="T:Jypeli.JypeliWindow.MoveEvent">
-            <summary>
-            Tapahtumatyyppi ikkunan paikan muutokselle.
-            </summary>
-        </member>
-        <member name="T:Jypeli.JypeliWindow.ResizeEvent">
-            <summary>
-            Tapahtumatyyppi ikkunan koon muutokselle.
             </summary>
         </member>
         <member name="T:Jypeli.ListHelpers">
